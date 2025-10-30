@@ -124,6 +124,7 @@ ndjson.dump(data, open("converted.ndjson", 'w'), ensure_ascii=False)
 build_update_info(token_cnt, contest_start_time, None, None, None, contest_init_time, data)
 # 终于！开始处理提交信息
 # @parma token编号，提交记录编号，语言id，提交时间，竞赛开始时间，提交队伍id，提交问题id，提交结果(1代表AC,0代表WA)，初始化时间, 输出对象
+
 with open ("result.csv", "r") as result_csv:
     reader = csv.reader(result_csv)
     bypass = -1

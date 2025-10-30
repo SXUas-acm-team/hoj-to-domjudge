@@ -3,27 +3,31 @@ import ndjson
 from datetime import datetime
 data = []
 # 构建竞赛信息
-def build_contest_info(token_id, contest_name, start_time, end_time, time, data):
+def build_contest_info(token_id, contest_name, start_time, end_time,freeze_time, time, data):
     iso_start_time = start_time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
     iso_end_time = end_time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
     iso_time = time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
+    duration_delta = end_time - start_time
+    freeze_duration_delta = end_time - freeze_time
+    duration = "{:02d}:{:02d}:{:02d}.000".format(duration_delta.seconds // 3600,(duration_delta.seconds % 3600) // 60, duration_delta.seconds % 60)
+    freeze_duration = "{:02d}:{:02d}:{:02d}.000".format(freeze_duration_delta.seconds // 3600,(freeze_duration_delta.seconds % 3600) // 60, freeze_duration_delta.seconds % 60)
     x = {
         "token":str(token_id[0]),
         "id":None,
         "type":"contest",
         "data":
             {
-                "formal_name": "三晋七校ACM队招新联赛",
+                "formal_name": str(contest_name),
                 "scoreboard_type": "pass-fail",
                 "start_time": iso_start_time,
                 "end_time": iso_end_time,
                 "scoreboard_thaw_time": None,
-                "duration": "5:00:00.000",
-                "scoreboard_freeze_duration": "1:00:00.000",
+                "duration": str(duration),
+                "scoreboard_freeze_duration": str(freeze_duration),
                 "cid": 1,
-                "id": "external-id-submit-demo",
-                "name": "首届三晋七校ACM队招新联赛",
-                "shortname": "三晋七校ACM队招新联赛",
+                "id": str(contest_name),
+                "name": str(contest_name),
+                "shortname": str(contest_name),
                 "allow_submit": True,
                 "runtime_as_score_tiebreaker": None,
                 "warning_message": None,
@@ -223,7 +227,7 @@ def build_team_info(token_id, id, organization_id, hidden, group_id, school, cou
             "id": str(id),
             "icpc_id": str(id),
             "label": str(id),
-            "name": team_name,
+            "name": str(team_name),
             "display_name": None,
             "public_description": None
         },
@@ -233,7 +237,7 @@ def build_team_info(token_id, id, organization_id, hidden, group_id, school, cou
     data.append(x)
     return x
 # 添加用户信息
-# token编号，用户id，用户名，队伍id，队伍名，初始化时间
+# token编号，用户id，队伍id,队伍名，时间，data
 # 用户信息id用于登录系统，用户属于队伍，实际显示为队伍名
 def build_user_info(token_id, user_id, team_id, team_name, time, data):
     iso_time = time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
@@ -245,7 +249,7 @@ def build_user_info(token_id, user_id, team_id, team_name, time, data):
             "last_login_time": None,
             "last_api_login_time": None,
             "first_login_time": None,
-            "team": team_name,
+            "team": str(team_name),
             "team_id": str(team_id),
             "roles":["team"],
             "type": "team",
@@ -264,12 +268,13 @@ def build_user_info(token_id, user_id, team_id, team_name, time, data):
     data.append(x)
     return x
 # 添加提交判题信息
-# @parma token编号，提交记录编号，语言id，提交时间，竞赛开始时间，提交队伍id，提交问题id，提交结果(1代表AC,0代表WA)，初始化时间
+# @parma token编号，提交记录编号，语言id，提交时间，竞赛开始时间，提交队伍id，提交问题id，提交结果(1代表AC,0代表WA)，初始化时间, 输出对象
 def build_judge_info(token_id, submission_id, language_id, submission_time, start_time, team_id, problem_id, result, time, data):
     iso_time = time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
     sub_time = submission_time.strftime("%Y-%m-%dT%H:%M:%S.000+08:00")
     contest_time = submission_time - start_time
-    con_time = "{:02d}:{:02d}:{:02d}.000".format(contest_time.days, contest_time.seconds // 3600, (contest_time.seconds % 3600) // 60,contest_time.seconds % 60)
+    con_time = "{:02d}:{:02d}:{:02d}.000".format(contest_time.seconds // 3600, (contest_time.seconds % 3600) // 60,contest_time.seconds % 60)
+    print(con_time)
     #con_time = contest_time.strftime("%H:%M:%S.000")
     judgement_result = "AC"
     if result == 0:
@@ -279,7 +284,7 @@ def build_judge_info(token_id, submission_id, language_id, submission_time, star
         "id": str(submission_id),
         "type": "submissions",
         "data":{
-            "language_id": language_id,
+            "language_id": str(language_id),
             "time":str(sub_time),
             "contest_time":con_time,
             "team_id": str(team_id),

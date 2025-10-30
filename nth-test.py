@@ -13,7 +13,7 @@ end_time = datetime(2025, 10, 29, 19, 30, 0)
 frozen_time = datetime(2025, 10, 29, 19, 10, 0)
 finalize_time = datetime(2025, 10, 29, 19, 40, 0)
 # 首先构建竞赛基本信息
-build_contest_info(token_cnt, "首届三晋七校ACM队招新联赛", start_time, end_time, init_time, data)
+build_contest_info(token_cnt, "首届三晋七校ACM队招新联赛", start_time, end_time, frozen_time, init_time, data)
 
 # 添加judge结果信息
 build_result_info(token_cnt, "AC", init_time, "correct", False, True, data)
